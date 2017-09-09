@@ -3,15 +3,22 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentlyPlaying: exampleVideoData[0]
+      videos: null,
+      currentlyPlaying: null
     };
+    this.searchYouTube({'maxResults': '5',
+      'part': 'snippet',
+      key: YOUTUBE_API_KEY,
+      'q': 'cat',
+      'type': 'video'}
+);
   }
   render() {
     return (
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <Search />
+            <Search clickHandler={(data, cb) => this.searchYouTube(data, cb)} />
           </div>
         </nav>
         <div className="row">
@@ -19,16 +26,26 @@ class App extends React.Component {
             <VideoPlayer video={this.state.currentlyPlaying}/>
           </div>
           <div className="col-md-5">
-            <VideoList videos={exampleVideoData} handleVideoClick={(video) => {this.setState({currentlyPlaying: video}); }} />
+            <VideoList videos={this.state.videos} handleVideoClick={(video) => {this.setState({currentlyPlaying: video}); }} />
           </div>
         </div>
       </div>
     );
   }
-  // handleVideoClick(video) {
-  //   console.log('clicked')
-  //   this.setState({ currentlyPlaying: video })
-  // }
+  searchYouTube(data, cb) {
+    $.ajax({
+      type: 'GET',
+      url: 'https://www.googleapis.com/youtube/v3/search',
+      data: data,
+      success: (data) => {
+        this.setState({
+          videos: data.items,
+          currentlyPlaying: data.items[0]
+        });
+        cb();
+      }
+    });
+  }
 
 }
 
