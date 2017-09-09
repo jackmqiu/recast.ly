@@ -19,7 +19,7 @@ class App extends React.Component {
             <VideoPlayer video={this.state.currentlyPlaying}/>
           </div>
           <div className="col-md-5">
-            <VideoList videos={exampleVideoData} handleVideoClick={(video) => this.setState({ currentlyPlaying})} />
+            <VideoList videos={exampleVideoData} handleVideoClick={(video) => {this.setState({currentlyPlaying: video}); }} />
           </div>
         </div>
       </div>
