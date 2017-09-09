@@ -1,6 +1,13 @@
 var Search = (props) => (
   <div className="search-bar form-inline">
-    <input className="form-control" type="text" />
+    <input className="form-control" type="text" onKeyDown={() => {
+      console.log(props.typeHandler);
+      props.typeHandler({'maxResults': '5',
+        'part': 'snippet',
+        key: YOUTUBE_API_KEY,
+        'q': $('.form-control').val(),
+        'type': 'video'});
+    }}/>
     <button className="btn hidden-sm-down" onClick={() => {
       props.clickHandler({'maxResults': '5',
         'part': 'snippet',

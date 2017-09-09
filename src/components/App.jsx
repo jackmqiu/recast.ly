@@ -6,19 +6,22 @@ class App extends React.Component {
       videos: null,
       currentlyPlaying: null
     };
+    this.debouncedSearchYouTube = _.debounce(this.searchYouTube, 500);
+  }
+  componentDidMount() {
     this.searchYouTube({'maxResults': '5',
       'part': 'snippet',
       key: YOUTUBE_API_KEY,
       'q': 'cat',
       'type': 'video'}
-);
+    );
   }
   render() {
     return (
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <Search clickHandler={(data, cb) => this.searchYouTube(data, cb)} />
+            <Search clickHandler={(data, cb) => this.searchYouTube(data, cb)} typeHandler={(data) => this.debouncedSearchYouTube(data)} />
           </div>
         </nav>
         <div className="row">
@@ -33,6 +36,7 @@ class App extends React.Component {
     );
   }
   searchYouTube(data, cb) {
+
     $.ajax({
       type: 'GET',
       url: 'https://www.googleapis.com/youtube/v3/search',
@@ -42,7 +46,6 @@ class App extends React.Component {
           videos: data.items,
           currentlyPlaying: data.items[0]
         });
-        cb();
       }
     });
   }
